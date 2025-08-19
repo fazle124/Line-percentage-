@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily End Line QI Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .date-display {
+            font-size: 1.2rem;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+        
+        .target {
+            background: #3498db;
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            padding: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #eee;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .line-input-group {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .line-label {
+            font-weight: 600;
+            min-width: 65px;
+        }
+        
+        .percent-input {
+            width: 50px;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            margin: 0 8px;
+            font-weight: 600;
+        }
+        
+        .percent-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .indicator {
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        
+        .green { color: #27ae60; }
+        .yellow { color: #f39c12; }
+        .red { color: #e74c3c; }
+        
+        .high-risk-section {
+            background: #fff4f4;
+            border: 1px solid #ffd1d1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .high-risk-title {
+            color: #e74c3c;
+            margin-bottom: 12px;
+        }
+        
+        .high-risk-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .high-risk-item {
+            background: #ffebeb;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .action-note {
+            background: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 18px;
+            border-radius: 4px;
+            margin: 25px 0;
+        }
+        
+        .action-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-update {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-update:hover {
+            background: #2980b9;
+        }
+        
+        .btn-copy {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            background: #219653;
+        }
+        
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27ae60;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        
+        .copy-notification.show {
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-clipboard-check"></i> Daily End Line QI Report</h1>
+            <div class="date-display" id="currentDate">Loading date...</div>
+        </header>
+        
+        <div class="target">
+            <i class="fas fa-bullseye"></i> Sewing Defects Target 10% Below
+        </div>
+        
+        <div class="main-content">
+            <h2 class="section-title">Quality Performance by Line (Defect %):</h2>
+            
+            <div class="input-grid" id="lines-container">
+                <!-- Line inputs will be generated here -->
+            </div>
+            
+            <div class="high-risk-section">
+                <h3 class="high-risk-title"><i class="fas fa-exclamation-circle"></i> High-Risk Lines (Defect >20%):</h3>
+                <div class="high-risk-list" id="high-risk-container">
+                    <!-- High risk lines will be generated here -->
+                </div>
+            </div>
+            
+            <div class="action-note">
+                <div class="action-title"><i class="fas fa-clipboard-list"></i> Action Note:</div>
+                <p>The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.</p>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-update" id="update-btn">
+                    <i class="fas fa-sync-alt"></i> Update Report
+                </button>
+                <button class="btn btn-copy" id="copy-btn">
+                    <i class="fas fa-copy"></i> Copy Report
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="copy-notification" id="copy-notification">
+        <i class="fas fa-check-circle"></i> Report copied to clipboard!
+    </div>
+    
+    <footer>
+        <p>Quality Inspection System • © 2025 Apparel Manufacturing Co.</p>
+    </footer>
+
+    <script>
+        // Set current date
+        function updateDate() {
+            const now = new Date();
+            const formattedDate = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
+            document.getElementById('currentDate').textContent = formattedDate;
+            return formattedDate;
+        }
+        
+        const currentDate = updateDate();
+        
+        // Initialize line data
+        let lineData = [
+            { line: '01', percent: 12 }, { line: '02', percent: 12 }, { line: '03', percent: 12 },
+            { line: '04', percent: 17 }, { line: '05', percent: 16 }, { line: '06', percent: 16 },
+            { line: '07', percent: 15 }, { line: '08', percent: 15 }, { line: '09', percent: 19 },
+            { line: '10', percent: 12 }, { line: '11', percent: 18 }, { line: '12', percent: 46 },
+            { line: '13', percent: 21 }, { line: '14', percent: 18 }, { line: '15', percent: 28 },
+            { line: '16', percent: 15 }, { line: '17', percent: 31 }, { line: '18', percent: 12 },
+            { line: '19', percent: 14 }, { line: '20', percent: 24 }, { line: '21', percent: 16 },
+            { line: '22', percent: 14 }, { line: '23', percent: 11 }, { line: '24', percent: 51 },
+            { line: '25', percent: 25 }, { line: '26', percent: 25 }, { line: '27', percent: 0 }
+        ];
+        
+        const linesContainer = document.getElementById('lines-container');
+        const highRiskContainer = document.getElementById('high-risk-container');
+        const updateBtn = document.getElementById('update-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const copyNotification = document.getElementById('copy-notification');
+        
+        // Function to get emoji for percentage
+        function getEmoji(percent) {
+            if (percent >= 1 && percent <= 9) return {emoji: '🟢', class: 'green'};
+            if (percent >= 10 && percent <= 19) return {emoji: '🟡', class: 'yellow'};
+            if (percent >= 20 && percent <= 99) return {emoji: '🔴', class: 'red'};
+            return {emoji: '', class: ''};
+        }
+        
+        // Function to display all lines with input fields
+        function displayLines() {
+            linesContainer.innerHTML = '';
+            
+            lineData.forEach(item => {
+                const indicator = getEmoji(item.percent);
+                
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'line-input-group';
+                
+                lineDiv.innerHTML = `
+                    <span class="line-label">Line ${item.line}</span>
+                    <input type="number" class="percent-input" value="${item.percent}" min="0" max="100" data-line="${item.line}">
+                    <span class="line-label">%</span>
+                    <span class="indicator ${indicator.class}">${indicator.emoji}</span>
+                `;
+                
+                linesContainer.appendChild(lineDiv);
+            });
+        }
+        
+        // Function to update high-risk lines display
+        function updateHighRiskLines() {
+            highRiskContainer.innerHTML = '';
+            const highRiskLines = lineData.filter(item => item.percent >= 20 && item.percent <= 99);
+            
+            if (highRiskLines.length > 0) {
+                highRiskLines.forEach(item => {
+                    const riskItem = document.createElement('div');
+                    riskItem.className = 'high-risk-item';
+                    riskItem.innerHTML = `Line ${item.line} – ${item.percent}% 🔴`;
+                    highRiskContainer.appendChild(riskItem);
+                });
+            } else {
+                highRiskContainer.innerHTML = '<div>No high-risk lines</div>';
+            }
+        }
+        
+        // Function to generate copyable text
+        function generateCopyText() {
+            let text = `📅 Daily End Line QI Report – ${currentDate}\n`;
+            text += `🎯 Sewing Defects Target 10% Below.\n\n`;
+            text += `Quality Performance by Line (Defect %):\n\n`;
+            
+            lineData.forEach(item => {
+                const indicator = getEmoji(item.percent);
+                text += `Line ${item.line} – ${item.percent}% ${indicator.emoji}\n`;
+            });
+            
+            const highRiskLines = lineData.filter(item => item.percent >= 20 && item.percent <= 99);
+            if (highRiskLines.length > 0) {
+                text += `\n🔴 High-Risk Lines (Defect >20%):\n`;
+                highRiskLines.forEach(item => {
+                    text += `Line ${item.line} – ${item.percent}%🔴\n`;
+                });
+            }
+            
+            text += `\n📌 Action Note:\n`;
+            text += `The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.`;
+            
+            return text;
+        }
+        
+        // Update button click handler
+        updateBtn.addEventListener('click', () => {
+            // Get all input elements
+            const inputs = document.querySelectorAll('.percent-input');
+            
+            // Update lineData with new values
+            inputs.forEach(input => {
+                const line = input.dataset.line;
+                const percent = parseInt(input.value) || 0;
+                const lineItem = lineData.find(item => item.line === line);
+                if (lineItem) {
+                    lineItem.percent = percent;
+                }
+            });
+            
+            // Refresh the display
+            displayLines();
+            updateHighRiskLines();
+        });
+        
+        // Copy button click handler
+        copyBtn.addEventListener('click', () => {
+            const copyText = generateCopyText();
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(copyText).then(() => {
+                // Show notification
+                copyNotification.classList.add('show');
+                setTimeout(() => {
+                    copyNotification.classList.remove('show');
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        });
+        
+        // Initial display
+        displayLines();
+        updateHighRiskLines();
+    </script>
+</body>
+</html>
