@@ -38,6 +38,25 @@
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
+        }
+        
+        .admin-login-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .admin-login-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
         
         .date-display {
@@ -208,6 +227,141 @@
             opacity: 1;
         }
         
+        /* Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-login {
+            background: #3498db;
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-cancel {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        /* Settings Panel */
+        .settings-panel {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .settings-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .threshold-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .threshold-control {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .threshold-control label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .threshold-control input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .text-controls {
+            margin: 20px 0;
+        }
+        
+        .text-control {
+            margin-bottom: 15px;
+        }
+        
+        .btn-save {
+            background: #27ae60;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
         footer {
             text-align: center;
             margin-top: 20px;
@@ -223,21 +377,95 @@
             .buttons {
                 flex-direction: column;
             }
+            
+            .admin-login-btn {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 15px;
+            }
+            
+            header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Admin Login</h2>
+            <div class="form-group">
+                <label for="username">User ID:</label>
+                <input type="text" id="username" placeholder="Enter admin user ID">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-login" id="loginBtn">Login</button>
+                <button class="modal-btn btn-cancel" id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1><i class="fas fa-clipboard-check"></i> Daily End Line QI Report</h1>
             <div class="date-display" id="currentDate">Loading date...</div>
+            <button class="admin-login-btn" id="adminLoginBtn">
+                <i class="fas fa-lock"></i> Admin Login
+            </button>
         </header>
         
-        <div class="target">
+        <div class="target" id="targetText">
             <i class="fas fa-bullseye"></i> Sewing Defects Target 10% Below
         </div>
         
         <div class="main-content">
+            <!-- Settings Panel (visible only after admin login) -->
+            <div class="settings-panel" id="settingsPanel">
+                <h3 class="settings-title"><i class="fas fa-cog"></i> Defect Threshold Settings</h3>
+                <div class="threshold-controls">
+                    <div class="threshold-control">
+                        <label for="greenThreshold">Green (🟢) Max %:</label>
+                        <input type="number" id="greenThreshold" min="0" max="100" value="8">
+                    </div>
+                    <div class="threshold-control">
+                        <label for="yellowThreshold">Yellow (🟡) Max %:</label>
+                        <input type="number" id="yellowThreshold" min="0" max="100" value="15">
+                    </div>
+                    <div class="threshold-control">
+                        <label for="redThreshold">Red (🔴) Min %:</label>
+                        <input type="number" id="redThreshold" min="0" max="100" value="16">
+                    </div>
+                    <div class="threshold-control">
+                        <label for="highRiskThreshold">High-Risk Min %:</label>
+                        <input type="number" id="highRiskThreshold" min="0" max="100" value="16">
+                    </div>
+                </div>
+                
+                <div class="text-controls">
+                    <h3 class="settings-title"><i class="fas fa-font"></i> Text Customization</h3>
+                    <div class="text-control">
+                        <label for="targetMessage">Target Message:</label>
+                        <textarea id="targetMessage" placeholder="Enter target message">Sewing Defects Target 10% Below</textarea>
+                    </div>
+                    <div class="text-control">
+                        <label for="actionNote">Action Note:</label>
+                        <textarea id="actionNote" placeholder="Enter action note">The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.</textarea>
+                    </div>
+                </div>
+                
+                <button class="btn-save" id="saveThresholdsBtn">
+                    <i class="fas fa-save"></i> Save All Settings
+                </button>
+            </div>
+            
             <h2 class="section-title">Quality Performance by Line (Defect %):</h2>
             
             <div class="input-grid" id="lines-container">
@@ -245,7 +473,7 @@
             </div>
             
             <div class="high-risk-section">
-                <h3 class="high-risk-title"><i class="fas fa-exclamation-circle"></i> High-Risk Lines (Defect >20%):</h3>
+                <h3 class="high-risk-title"><i class="fas fa-exclamation-circle"></i> High-Risk Lines (Defect ><span id="highRiskValue">16</span>%):</h3>
                 <div class="high-risk-list" id="high-risk-container">
                     <!-- High risk lines will be generated here -->
                 </div>
@@ -253,7 +481,7 @@
             
             <div class="action-note">
                 <div class="action-title"><i class="fas fa-clipboard-list"></i> Action Note:</div>
-                <p>The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.</p>
+                <p id="actionNoteText">The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.</p>
             </div>
             
             <div class="buttons">
@@ -299,17 +527,40 @@
             { line: '25', percent: 25 }, { line: '26', percent: 25 }, { line: '27', percent: 0 }
         ];
         
+        // Default threshold values
+        let thresholds = {
+            green: 8,
+            yellow: 15,
+            red: 16,
+            highRisk: 16
+        };
+        
+        // Default text values
+        let textContent = {
+            target: "Sewing Defects Target 10% Below",
+            actionNote: "The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines."
+        };
+        
         const linesContainer = document.getElementById('lines-container');
         const highRiskContainer = document.getElementById('high-risk-container');
         const updateBtn = document.getElementById('update-btn');
         const copyBtn = document.getElementById('copy-btn');
         const copyNotification = document.getElementById('copy-notification');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const loginModal = document.getElementById('loginModal');
+        const loginBtn = document.getElementById('loginBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const saveThresholdsBtn = document.getElementById('saveThresholdsBtn');
+        const highRiskValueSpan = document.getElementById('highRiskValue');
+        const targetTextElement = document.getElementById('targetText');
+        const actionNoteTextElement = document.getElementById('actionNoteText');
         
-        // Function to get emoji for percentage
+        // Function to get emoji for percentage based on thresholds
         function getEmoji(percent) {
-            if (percent >= 1 && percent <= 9) return {emoji: '🟢', class: 'green'};
-            if (percent >= 10 && percent <= 19) return {emoji: '🟡', class: 'yellow'};
-            if (percent >= 20 && percent <= 99) return {emoji: '🔴', class: 'red'};
+            if (percent >= 1 && percent <= thresholds.green) return {emoji: '🟢', class: 'green'};
+            if (percent > thresholds.green && percent <= thresholds.yellow) return {emoji: '🟡', class: 'yellow'};
+            if (percent >= thresholds.red && percent <= 100) return {emoji: '🔴', class: 'red'};
             return {emoji: '', class: ''};
         }
         
@@ -337,7 +588,9 @@
         // Function to update high-risk lines display
         function updateHighRiskLines() {
             highRiskContainer.innerHTML = '';
-            const highRiskLines = lineData.filter(item => item.percent >= 20 && item.percent <= 99);
+            highRiskValueSpan.textContent = thresholds.highRisk;
+            
+            const highRiskLines = lineData.filter(item => item.percent >= thresholds.highRisk && item.percent <= 100);
             
             if (highRiskLines.length > 0) {
                 highRiskLines.forEach(item => {
@@ -351,10 +604,16 @@
             }
         }
         
+        // Function to update text content
+        function updateTextContent() {
+            targetTextElement.innerHTML = `<i class="fas fa-bullseye"></i> ${textContent.target}`;
+            actionNoteTextElement.textContent = textContent.actionNote;
+        }
+        
         // Function to generate copyable text
         function generateCopyText() {
             let text = `📅 Daily End Line QI Report – ${currentDate}\n`;
-            text += `🎯 Sewing Defects Target 10% Below.\n\n`;
+            text += `🎯 ${textContent.target}\n\n`;
             text += `Quality Performance by Line (Defect %):\n\n`;
             
             lineData.forEach(item => {
@@ -362,16 +621,16 @@
                 text += `Line ${item.line} – ${item.percent}% ${indicator.emoji}\n`;
             });
             
-            const highRiskLines = lineData.filter(item => item.percent >= 20 && item.percent <= 99);
+            const highRiskLines = lineData.filter(item => item.percent >= thresholds.highRisk && item.percent <= 100);
             if (highRiskLines.length > 0) {
-                text += `\n🔴 High-Risk Lines (Defect >20%):\n`;
+                text += `\n🔴 High-Risk Lines (Defect >${thresholds.highRisk}%):\n`;
                 highRiskLines.forEach(item => {
                     text += `Line ${item.line} – ${item.percent}%🔴\n`;
                 });
             }
             
             text += `\n📌 Action Note:\n`;
-            text += `The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.`;
+            text += `${textContent.actionNote}`;
             
             return text;
         }
@@ -409,12 +668,87 @@
                 }, 3000);
             }).catch(err => {
                 console.error('Failed to copy: ', err);
+                alert('Failed to copy report. Please try again.');
             });
+        });
+        
+        // Admin login functionality
+        adminLoginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+        
+        cancelBtn.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
+        
+        loginBtn.addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === '127627') {
+                // Successful login
+                loginModal.style.display = 'none';
+                settingsPanel.style.display = 'block';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                
+                // Set current threshold values in inputs
+                document.getElementById('greenThreshold').value = thresholds.green;
+                document.getElementById('yellowThreshold').value = thresholds.yellow;
+                document.getElementById('redThreshold').value = thresholds.red;
+                document.getElementById('highRiskThreshold').value = thresholds.highRisk;
+                
+                // Set current text values in inputs
+                document.getElementById('targetMessage').value = textContent.target;
+                document.getElementById('actionNote').value = textContent.actionNote;
+            } else {
+                alert('Invalid credentials. Please try again.');
+            }
+        });
+        
+        // Save thresholds and text content
+        saveThresholdsBtn.addEventListener('click', () => {
+            const greenValue = parseInt(document.getElementById('greenThreshold').value);
+            const yellowValue = parseInt(document.getElementById('yellowThreshold').value);
+            const redValue = parseInt(document.getElementById('redThreshold').value);
+            const highRiskValue = parseInt(document.getElementById('highRiskThreshold').value);
+            
+            if (isNaN(greenValue) || isNaN(yellowValue) || isNaN(redValue) || isNaN(highRiskValue)) {
+                alert('Please enter valid numbers for all thresholds.');
+                return;
+            }
+            
+            if (greenValue >= yellowValue || yellowValue >= redValue) {
+                alert('Color thresholds must be in increasing order: Green < Yellow < Red');
+                return;
+            }
+            
+            if (highRiskValue < 0 || highRiskValue > 100) {
+                alert('High-Risk threshold must be between 0 and 100');
+                return;
+            }
+            
+            thresholds.green = greenValue;
+            thresholds.yellow = yellowValue;
+            thresholds.red = redValue;
+            thresholds.highRisk = highRiskValue;
+            
+            // Update text content
+            textContent.target = document.getElementById('targetMessage').value;
+            textContent.actionNote = document.getElementById('actionNote').value;
+            
+            alert('Settings updated successfully!');
+            displayLines();
+            updateHighRiskLines();
+            updateTextContent();
         });
         
         // Initial display
         displayLines();
         updateHighRiskLines();
+        updateTextContent();
     </script>
 </body>
 </html>
