@@ -25,7 +25,7 @@
         
         .container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
             background: white;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -100,6 +100,7 @@
             padding: 8px 12px;
             border-radius: 6px;
             border: 1px solid #ddd;
+            position: relative;
         }
         
         .line-label {
@@ -352,6 +353,64 @@
             margin-bottom: 15px;
         }
         
+        .line-management {
+            margin: 20px 0;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        
+        .line-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .line-controls input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            flex: 1;
+        }
+        
+        .line-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .line-item:last-child {
+            border-bottom: none;
+        }
+        
+        .line-item-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .line-item-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .line-item-btn.delete {
+            background: #e74c3c;
+        }
+        
         .btn-save {
             background: #27ae60;
             color: white;
@@ -360,6 +419,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
+            margin-top: 15px;
         }
         
         footer {
@@ -389,6 +449,10 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+            }
+            
+            .line-controls {
+                flex-direction: column;
             }
         }
     </style>
@@ -461,7 +525,18 @@
                     </div>
                 </div>
                 
-                <button class="btn-save" id="saveThresholdsBtn">
+                <div class="line-management">
+                    <h3 class="settings-title"><i class="fas fa-list"></i> Line Management</h3>
+                    <div class="line-controls">
+                        <input type="text" id="newLineName" placeholder="Enter new line name">
+                        <button class="btn-save" id="addLineBtn">Add Line</button>
+                    </div>
+                    <div class="line-list" id="lineList">
+                        <!-- Line items will be added here -->
+                    </div>
+                </div>
+                
+                <button class="btn-save" id="saveAllBtn">
                     <i class="fas fa-save"></i> Save All Settings
                 </button>
             </div>
@@ -514,32 +589,51 @@
         
         const currentDate = updateDate();
         
-        // Initialize line data
-        let lineData = [
-            { line: '01', percent: 12 }, { line: '02', percent: 12 }, { line: '03', percent: 12 },
-            { line: '04', percent: 17 }, { line: '05', percent: 16 }, { line: '06', percent: 16 },
-            { line: '07', percent: 15 }, { line: '08', percent: 15 }, { line: '09', percent: 19 },
-            { line: '10', percent: 12 }, { line: '11', percent: 18 }, { line: '12', percent: 46 },
-            { line: '13', percent: 21 }, { line: '14', percent: 18 }, { line: '15', percent: 28 },
-            { line: '16', percent: 15 }, { line: '17', percent: 31 }, { line: '18', percent: 12 },
-            { line: '19', percent: 14 }, { line: '20', percent: 24 }, { line: '21', percent: 16 },
-            { line: '22', percent: 14 }, { line: '23', percent: 11 }, { line: '24', percent: 51 },
-            { line: '25', percent: 25 }, { line: '26', percent: 25 }, { line: '27', percent: 0 }
-        ];
+        // Load data from localStorage or initialize with defaults
+        function loadData() {
+            const savedData = localStorage.getItem('qiReportData');
+            if (savedData) {
+                return JSON.parse(savedData);
+            }
+            
+            // Default data
+            return {
+                lineData: [
+                    { line: '01', percent: 12 }, { line: '02', percent: 12 }, { line: '03', percent: 12 },
+                    { line: '04', percent: 17 }, { line: '05', percent: 16 }, { line: '06', percent: 16 },
+                    { line: '07', percent: 15 }, { line: '08', percent: 15 }, { line: '09', percent: 19 },
+                    { line: '10', percent: 12 }, { line: '11', percent: 18 }, { line: '12', percent: 46 },
+                    { line: '13', percent: 21 }, { line: '14', percent: 18 }, { line: '15', percent: 28 },
+                    { line: '16', percent: 15 }, { line: '17', percent: 31 }, { line: '18', percent: 12 },
+                    { line: '19', percent: 14 }, { line: '20', percent: 24 }, { line: '21', percent: 16 },
+                    { line: '22', percent: 14 }, { line: '23', percent: 11 }, { line: '24', percent: 51 },
+                    { line: '25', percent: 25 }, { line: '26', percent: 25 }, { line: '27', percent: 0 }
+                ],
+                thresholds: {
+                    green: 8,
+                    yellow: 15,
+                    red: 16,
+                    highRisk: 16
+                },
+                textContent: {
+                    target: "Sewing Defects Target 10% Below",
+                    actionNote: "The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines."
+                }
+            };
+        }
         
-        // Default threshold values
-        let thresholds = {
-            green: 8,
-            yellow: 15,
-            red: 16,
-            highRisk: 16
-        };
+        // Save data to localStorage
+        function saveData() {
+            const dataToSave = {
+                lineData,
+                thresholds,
+                textContent
+            };
+            localStorage.setItem('qiReportData', JSON.stringify(dataToSave));
+        }
         
-        // Default text values
-        let textContent = {
-            target: "Sewing Defects Target 10% Below",
-            actionNote: "The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines."
-        };
+        // Initialize data
+        let { lineData, thresholds, textContent } = loadData();
         
         const linesContainer = document.getElementById('lines-container');
         const highRiskContainer = document.getElementById('high-risk-container');
@@ -551,10 +645,13 @@
         const loginBtn = document.getElementById('loginBtn');
         const cancelBtn = document.getElementById('cancelBtn');
         const settingsPanel = document.getElementById('settingsPanel');
-        const saveThresholdsBtn = document.getElementById('saveThresholdsBtn');
+        const saveAllBtn = document.getElementById('saveAllBtn');
         const highRiskValueSpan = document.getElementById('highRiskValue');
         const targetTextElement = document.getElementById('targetText');
         const actionNoteTextElement = document.getElementById('actionNoteText');
+        const addLineBtn = document.getElementById('addLineBtn');
+        const newLineNameInput = document.getElementById('newLineName');
+        const lineList = document.getElementById('lineList');
         
         // Function to get emoji for percentage based on thresholds
         function getEmoji(percent) {
@@ -610,6 +707,73 @@
             actionNoteTextElement.textContent = textContent.actionNote;
         }
         
+        // Function to update line list in admin panel
+        function updateLineList() {
+            lineList.innerHTML = '';
+            
+            lineData.forEach(item => {
+                const lineItem = document.createElement('div');
+                lineItem.className = 'line-item';
+                
+                const lineNameInput = document.createElement('input');
+                lineNameInput.type = 'text';
+                lineNameInput.value = item.line;
+                lineNameInput.dataset.original = item.line;
+                lineNameInput.addEventListener('change', (e) => {
+                    const originalLine = e.target.dataset.original;
+                    const newLine = e.target.value;
+                    
+                    if (newLine && newLine !== originalLine) {
+                        // Check if line name already exists
+                        if (lineData.some(line => line.line === newLine)) {
+                            alert('Line name already exists!');
+                            e.target.value = originalLine;
+                            return;
+                        }
+                        
+                        // Update line name
+                        const lineItem = lineData.find(line => line.line === originalLine);
+                        if (lineItem) {
+                            lineItem.line = newLine;
+                            e.target.dataset.original = newLine;
+                            displayLines();
+                            updateHighRiskLines();
+                        }
+                    } else {
+                        e.target.value = originalLine;
+                    }
+                });
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'line-item-btn delete';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.addEventListener('click', () => {
+                    if (lineData.length <= 1) {
+                        alert('You must have at least one line!');
+                        return;
+                    }
+                    
+                    if (confirm('Are you sure you want to delete this line?')) {
+                        const index = lineData.findIndex(line => line.line === item.line);
+                        if (index !== -1) {
+                            lineData.splice(index, 1);
+                            updateLineList();
+                            displayLines();
+                            updateHighRiskLines();
+                        }
+                    }
+                });
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'line-item-buttons';
+                buttonContainer.appendChild(deleteBtn);
+                
+                lineItem.appendChild(lineNameInput);
+                lineItem.appendChild(buttonContainer);
+                lineList.appendChild(lineItem);
+            });
+        }
+        
         // Function to generate copyable text
         function generateCopyText() {
             let text = `📅 Daily End Line QI Report – ${currentDate}\n`;
@@ -653,6 +817,7 @@
             // Refresh the display
             displayLines();
             updateHighRiskLines();
+            saveData();
         });
         
         // Copy button click handler
@@ -703,13 +868,41 @@
                 // Set current text values in inputs
                 document.getElementById('targetMessage').value = textContent.target;
                 document.getElementById('actionNote').value = textContent.actionNote;
+                
+                // Update line list
+                updateLineList();
             } else {
                 alert('Invalid credentials. Please try again.');
             }
         });
         
-        // Save thresholds and text content
-        saveThresholdsBtn.addEventListener('click', () => {
+        // Add new line
+        addLineBtn.addEventListener('click', () => {
+            const newLineName = newLineNameInput.value.trim();
+            
+            if (!newLineName) {
+                alert('Please enter a line name');
+                return;
+            }
+            
+            // Check if line name already exists
+            if (lineData.some(line => line.line === newLineName)) {
+                alert('Line name already exists!');
+                return;
+            }
+            
+            // Add new line with 0% default
+            lineData.push({ line: newLineName, percent: 0 });
+            newLineNameInput.value = '';
+            
+            // Update displays
+            updateLineList();
+            displayLines();
+            updateHighRiskLines();
+        });
+        
+        // Save all settings
+        saveAllBtn.addEventListener('click', () => {
             const greenValue = parseInt(document.getElementById('greenThreshold').value);
             const yellowValue = parseInt(document.getElementById('yellowThreshold').value);
             const redValue = parseInt(document.getElementById('redThreshold').value);
@@ -739,10 +932,11 @@
             textContent.target = document.getElementById('targetMessage').value;
             textContent.actionNote = document.getElementById('actionNote').value;
             
-            alert('Settings updated successfully!');
+            alert('All settings saved successfully!');
             displayLines();
             updateHighRiskLines();
             updateTextContent();
+            saveData();
         });
         
         // Initial display
