@@ -6,6 +6,17 @@
     <title>Daily End Line QI Report</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --info-color: #9b59b6;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+        
         * {
             box-sizing: border-box;
             margin: 0;
@@ -16,164 +27,392 @@
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: 20px;
             color: #333;
         }
         
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            margin: 20px 0;
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
         }
         
-        header {
-            background: #2c3e50;
+        /* Header Styles */
+        .header {
+            background: var(--primary-color);
             color: white;
             padding: 20px;
-            text-align: center;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             position: relative;
         }
         
-        .admin-login-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
         
-        .admin-login-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .title-section h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
         }
         
         .date-display {
-            font-size: 1.2rem;
-            margin-top: 8px;
+            font-size: 1.1rem;
             opacity: 0.9;
         }
         
-        .target {
-            background: #3498db;
-            color: white;
-            padding: 12px 20px;
-            text-align: center;
-            font-weight: 600;
+        .admin-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
         }
         
-        .main-content {
+        .admin-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Target Banner */
+        .target-banner {
+            background: var(--secondary-color);
+            color: white;
+            padding: 15px 25px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        /* Main Content Layout */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Left Panel - Lines and Defects */
+        .left-panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             padding: 25px;
         }
         
-        .section-title {
+        /* Right Panel - Settings and High Risk */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* Defect Types Display */
+        .defect-types-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+        }
+        
+        .card-title {
             font-size: 1.3rem;
+            color: var(--primary-color);
             margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #eee;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-        
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-        
-        .line-input-group {
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
             display: flex;
             align-items: center;
-            background: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            position: relative;
+            gap: 10px;
         }
         
-        .line-label {
+        .defect-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .defect-tag {
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Lines Container */
+        .lines-container {
+            margin: 25px 0;
+        }
+        
+        .line-card {
+            background: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .line-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .line-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .line-name {
             font-weight: 600;
-            min-width: 65px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        
+        .defect-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        
+        .defect-input-group {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .defect-label {
+            font-weight: 600;
+            min-width: 120px;
+            color: var(--primary-color);
         }
         
         .percent-input {
-            width: 50px;
-            padding: 6px;
-            border: 1px solid #ccc;
+            width: 60px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             text-align: center;
-            margin: 0 8px;
+            margin: 0 10px;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
         
         .percent-input:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
         
         .indicator {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-left: 10px;
         }
         
-        .green { color: #27ae60; }
-        .yellow { color: #f39c12; }
-        .red { color: #e74c3c; }
+        .green { color: var(--success-color); }
+        .yellow { color: var(--warning-color); }
+        .red { color: var(--danger-color); }
         
-        .high-risk-section {
-            background: #fff4f4;
-            border: 1px solid #ffd1d1;
-            border-radius: 8px;
+        /* High Risk Sections */
+        .high-risk-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .high-risk-title {
-            color: #e74c3c;
-            margin-bottom: 12px;
         }
         
         .high-risk-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
+            margin-top: 15px;
         }
         
         .high-risk-item {
-            background: #ffebeb;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-        
-        .action-note {
-            background: #e8f4fc;
-            border-left: 5px solid #3498db;
-            padding: 18px;
+            background: #fff5f5;
+            border-left: 4px solid var(--danger-color);
+            padding: 12px 15px;
+            margin-bottom: 10px;
             border-radius: 4px;
-            margin: 25px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .action-title {
+        .high-risk-item.warning {
+            background: #fff9e6;
+            border-left-color: var(--warning-color);
+        }
+        
+        /* Settings Panel */
+        .settings-panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .settings-section:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .control-group label {
             font-weight: 600;
             margin-bottom: 8px;
-            color: #2c3e50;
+            color: var(--primary-color);
         }
         
-        .buttons {
+        .control-group input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .control-group input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        /* Management Sections */
+        .management-section {
+            background: var(--light-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .management-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .management-controls input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        .items-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+        }
+        
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .item-row:last-child {
+            border-bottom: none;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-btn {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .delete-btn {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Action Note */
+        .action-note {
+            background: linear-gradient(135deg, #e8f4fc 0%, #d1e7f8 100%);
+            border-left: 5px solid var(--secondary-color);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Buttons */
+        .action-buttons {
             display: flex;
             gap: 15px;
             margin-top: 25px;
@@ -183,63 +422,42 @@
         .btn {
             padding: 12px 25px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
-        .btn-update {
-            background: #3498db;
+        .btn-primary {
+            background: var(--secondary-color);
             color: white;
         }
         
-        .btn-update:hover {
-            background: #2980b9;
-        }
-        
-        .btn-copy {
-            background: #27ae60;
+        .btn-success {
+            background: var(--success-color);
             color: white;
         }
         
-        .btn-copy:hover {
-            background: #219653;
-        }
-        
-        .btn-paste {
-            background: #9b59b6;
+        .btn-warning {
+            background: var(--warning-color);
             color: white;
         }
         
-        .btn-paste:hover {
-            background: #8e44ad;
-        }
-        
-        .copy-notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #27ae60;
+        .btn-danger {
+            background: var(--danger-color);
             color: white;
-            padding: 12px 25px;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1000;
         }
         
-        .copy-notification.show {
-            opacity: 1;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
         
-        /* Login Modal */
-        .modal {
+        /* Modals */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -250,446 +468,452 @@
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
         
         .modal-content {
             background: white;
             padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .modal-title {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        
-        .form-group input, .form-group textarea {
+            border-radius: 15px;
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
         }
         
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
-        .btn-login {
-            background: #3498db;
-            color: white;
-            flex: 1;
-        }
-        
-        .btn-cancel {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        /* Settings Panel */
-        .settings-panel {
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            display: none;
-        }
-        
-        .settings-title {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-        
-        .threshold-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .threshold-control {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .threshold-control label {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .threshold-control input {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        
-        .text-controls {
-            margin: 20px 0;
-        }
-        
-        .text-control {
-            margin-bottom: 15px;
-        }
-        
-        .line-management {
-            margin: 20px 0;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-        }
-        
-        .line-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .line-controls input {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            flex: 1;
-        }
-        
-        .line-list {
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-        }
-        
-        .line-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .line-item:last-child {
-            border-bottom: none;
-        }
-        
-        .line-item-buttons {
+        /* Paste Modal Tabs */
+        .modal-tabs {
             display: flex;
             gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
         }
         
-        .line-item-btn {
-            background: #3498db;
-            color: white;
+        .modal-tab {
+            padding: 10px 20px;
+            background: none;
             border: none;
-            border-radius: 4px;
-            padding: 4px 8px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .line-item-btn.delete {
-            background: #e74c3c;
-        }
-        
-        .btn-save {
-            background: #27ae60;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
+            border-bottom: 3px solid transparent;
             cursor: pointer;
             font-weight: 600;
-            margin-top: 15px;
+            color: #666;
+            transition: all 0.3s ease;
         }
         
-        /* Paste Modal */
-        .paste-modal {
+        .modal-tab.active {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+        }
+        
+        .tab-content {
             display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Notifications */
+        .notification {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
+            z-index: 1001;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
         }
         
-        .paste-modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
         
-        .paste-instructions {
-            margin-bottom: 15px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
         }
         
-        .paste-example {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-            font-family: monospace;
-            font-size: 0.9rem;
-        }
-        
-        footer {
+        /* Footer */
+        .footer {
             text-align: center;
-            margin-top: 20px;
-            color: #7f8c8d;
+            padding: 20px;
+            color: #666;
             font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 30px;
         }
         
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .input-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            .header-content {
+                flex-direction: column;
+                text-align: center;
             }
             
-            .buttons {
+            .defect-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .management-controls {
                 flex-direction: column;
             }
             
-            .admin-login-btn {
-                position: relative;
-                top: 0;
-                right: 0;
-                margin-bottom: 15px;
+            .action-buttons {
+                flex-direction: column;
             }
             
-            header {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .line-controls {
-                flex-direction: column;
+            .btn {
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="title-section">
+                    <h1><i class="fas fa-clipboard-check"></i> Daily End Line Quality Inspection Report</h1>
+                    <div class="date-display" id="currentDate">Loading date...</div>
+                </div>
+                <div class="admin-section">
+                    <button class="admin-btn" id="adminLoginBtn">
+                        <i class="fas fa-lock"></i> Admin Login
+                    </button>
+                    <button class="admin-btn" id="logoutBtn" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Target Banner -->
+        <div class="target-banner" id="targetText">
+            <i class="fas fa-bullseye"></i> Sewing Defects Target 10% Below
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <!-- Defect Types -->
+                <div class="defect-types-card">
+                    <h2 class="card-title"><i class="fas fa-tags"></i> Active Defect Types</h2>
+                    <div class="defect-tags" id="defectTypeList">
+                        <!-- Defect types will appear here -->
+                    </div>
+                </div>
+
+                <!-- Lines Container -->
+                <div class="lines-container" id="lines-container">
+                    <!-- Line cards will appear here -->
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="updateBtn">
+                        <i class="fas fa-sync-alt"></i> Update Report
+                    </button>
+                    <button class="btn btn-success" id="pasteBtn">
+                        <i class="fas fa-paste"></i> Paste Percentages
+                    </button>
+                    <button class="btn btn-warning" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copy Report
+                    </button>
+                </div>
+
+                <!-- Action Note -->
+                <div class="action-note">
+                    <h3 class="card-title"><i class="fas fa-clipboard-list"></i> Action Note</h3>
+                    <p id="actionNoteText">The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.</p>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <!-- High Risk Sections -->
+                <div class="high-risk-card">
+                    <h2 class="card-title"><i class="fas fa-exclamation-triangle"></i> High-Risk Lines</h2>
+                    
+                    <div class="high-risk-section">
+                        <h3 style="color: var(--danger-color); margin-bottom: 10px;">
+                            <i class="fas fa-fire"></i> Total Defects ><span id="totalRiskValue">16</span>%
+                        </h3>
+                        <div class="high-risk-list" id="totalHighRiskContainer">
+                            <!-- High risk lines for total defects -->
+                        </div>
+                    </div>
+
+                    <div class="high-risk-section" style="margin-top: 20px;">
+                        <h3 style="color: var(--warning-color); margin-bottom: 10px;">
+                            <i class="fas fa-cut"></i> Uncut Thread ><span id="uncutRiskValue">10</span>%
+                        </h3>
+                        <div class="high-risk-list" id="uncutHighRiskContainer">
+                            <!-- High risk lines for uncut thread -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Panel (Admin Only) -->
+                <div class="settings-panel" id="settingsPanel" style="display: none;">
+                    <h2 class="card-title"><i class="fas fa-cog"></i> Admin Settings</h2>
+
+                    <!-- Defect Threshold Settings -->
+                    <div class="settings-section">
+                        <h3 style="margin-bottom: 15px; color: var(--primary-color);">
+                            <i class="fas fa-sliders-h"></i> Defect Threshold Settings
+                        </h3>
+                        <div class="settings-grid">
+                            <div class="control-group">
+                                <label>Green (🟢) Max %</label>
+                                <input type="number" id="greenThreshold" min="0" max="100" value="8">
+                            </div>
+                            <div class="control-group">
+                                <label>Yellow (🟡) Max %</label>
+                                <input type="number" id="yellowThreshold" min="0" max="100" value="15">
+                            </div>
+                            <div class="control-group">
+                                <label>Red (🔴) Min %</label>
+                                <input type="number" id="redThreshold" min="0" max="100" value="16">
+                            </div>
+                            <div class="control-group">
+                                <label>High-Risk Min %</label>
+                                <input type="number" id="highRiskThreshold" min="0" max="100" value="16">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Uncut Thread Settings -->
+                    <div class="settings-section">
+                        <h3 style="margin-bottom: 15px; color: var(--primary-color);">
+                            <i class="fas fa-cut"></i> Uncut Thread Settings
+                        </h3>
+                        <div class="settings-grid">
+                            <div class="control-group">
+                                <label>Green (🟢) Max %</label>
+                                <input type="number" id="uncutGreenThreshold" min="0" max="100" value="8">
+                            </div>
+                            <div class="control-group">
+                                <label>Yellow (🟡) Max %</label>
+                                <input type="number" id="uncutYellowThreshold" min="0" max="100" value="15">
+                            </div>
+                            <div class="control-group">
+                                <label>Red (🔴) Min %</label>
+                                <input type="number" id="uncutRedThreshold" min="0" max="100" value="16">
+                            </div>
+                            <div class="control-group">
+                                <label>High-Risk %</label>
+                                <input type="number" id="uncutHighRiskThreshold" min="0" max="100" value="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text Customization -->
+                    <div class="settings-section">
+                        <h3 style="margin-bottom: 15px; color: var(--primary-color);">
+                            <i class="fas fa-font"></i> Text Customization
+                        </h3>
+                        <div class="control-group">
+                            <label>Target Message</label>
+                            <textarea id="targetMessage" rows="3" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; resize: vertical;">Sewing Defects Target 10% Below</textarea>
+                        </div>
+                        <div class="control-group" style="margin-top: 15px;">
+                            <label>Action Note</label>
+                            <textarea id="actionNote" rows="4" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; resize: vertical;">The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Management Sections -->
+                    <div class="management-section">
+                        <h3 style="margin-bottom: 15px; color: var(--primary-color);">
+                            <i class="fas fa-tags"></i> Defect Type Management
+                        </h3>
+                        <div class="management-controls">
+                            <input type="text" id="newDefectName" placeholder="Enter new defect type">
+                            <button class="btn btn-success" id="addDefectBtn" style="padding: 10px 15px;">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div class="items-list" id="defectList">
+                            <!-- Defect types list -->
+                        </div>
+                    </div>
+
+                    <div class="management-section">
+                        <h3 style="margin-bottom: 15px; color: var(--primary-color);">
+                            <i class="fas fa-list"></i> Line Management
+                        </h3>
+                        <div class="management-controls">
+                            <input type="text" id="newLineName" placeholder="Enter new line name">
+                            <button class="btn btn-success" id="addLineBtn" style="padding: 10px 15px;">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div class="items-list" id="lineList">
+                            <!-- Line list -->
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <button class="btn btn-primary" id="saveAllBtn" style="width: 100%; margin-top: 20px;">
+                        <i class="fas fa-save"></i> Save All Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Quality Inspection System • © 2025 Apparel Manufacturing Co.</p>
+        </div>
+    </div>
+
     <!-- Login Modal -->
-    <div class="modal" id="loginModal">
+    <div class="modal-overlay" id="loginModal">
         <div class="modal-content">
-            <h2 class="modal-title">Admin Login</h2>
-            <div class="form-group">
-                <label for="username">User ID:</label>
-                <input type="text" id="username" placeholder="Enter admin user ID">
+            <h2 style="text-align: center; margin-bottom: 25px; color: var(--primary-color);">
+                <i class="fas fa-lock"></i> Admin Login
+            </h2>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600;">User ID</label>
+                <input type="text" id="username" placeholder="Enter admin user ID" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem;">
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" placeholder="Enter password">
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Password</label>
+                <input type="password" id="password" placeholder="Enter password" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem;">
             </div>
-            <div class="modal-buttons">
-                <button class="modal-btn btn-login" id="loginBtn">Login</button>
-                <button class="modal-btn btn-cancel" id="cancelBtn">Cancel</button>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn btn-primary" id="loginBtn" style="flex: 1;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="btn btn-danger" id="modalCancelBtn" style="flex: 1;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Paste Modal -->
-    <div class="paste-modal" id="pasteModal">
-        <div class="paste-modal-content">
-            <h2 class="modal-title">Paste Percentages from Excel</h2>
-            <div class="paste-instructions">
-                Copy percentages from Excel and paste them below. The system will automatically detect and apply them in order.
+    <div class="modal-overlay" id="pasteModal">
+        <div class="modal-content">
+            <h2 style="text-align: center; margin-bottom: 25px; color: var(--primary-color);">
+                <i class="fas fa-paste"></i> Paste Percentages
+            </h2>
+            
+            <div class="modal-tabs">
+                <button class="modal-tab active" data-tab="total">Total Defects</button>
+                <button class="modal-tab" data-tab="uncut">Uncut Thread</button>
             </div>
-            <div class="paste-example">
-                Example format from Excel:<br>
-                1%<br>
-                2%<br>
-                3%<br>
-                4%<br>
-                5%
+            
+            <div class="tab-content active" id="totalTab">
+                <p style="margin-bottom: 15px; color: #666;">Paste total defect percentages (one per line):</p>
+                <textarea id="pasteAreaTotal" placeholder="Example:&#10;12&#10;15&#10;18&#10;22" rows="12" style="width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; font-family: monospace; resize: vertical;"></textarea>
             </div>
-            <div class="form-group">
-                <textarea id="pasteArea" placeholder="Paste your percentages here (from Excel)" rows="10"></textarea>
+            
+            <div class="tab-content" id="uncutTab">
+                <p style="margin-bottom: 15px; color: #666;">Paste uncut thread percentages (one per line):</p>
+                <textarea id="pasteAreaUncut" placeholder="Example:&#10;5&#10;3&#10;8&#10;2" rows="12" style="width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; font-family: monospace; resize: vertical;"></textarea>
             </div>
-            <div class="modal-buttons">
-                <button class="modal-btn btn-login" id="pasteApplyBtn">Apply to Lines</button>
-                <button class="modal-btn btn-cancel" id="pasteCancelBtn">Cancel</button>
+            
+            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <button class="btn btn-success" id="pasteApplyBtn" style="flex: 1;">
+                    <i class="fas fa-check"></i> Apply
+                </button>
+                <button class="btn btn-danger" id="pasteCancelBtn" style="flex: 1;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-clipboard-check"></i> Daily End Line QI Report</h1>
-            <div class="date-display" id="currentDate">Loading date...</div>
-            <button class="admin-login-btn" id="adminLoginBtn">
-                <i class="fas fa-lock"></i> Admin Login
-            </button>
-        </header>
-        
-        <div class="target" id="targetText">
-            <i class="fas fa-bullseye"></i> Sewing Defects Target 10% Below
-        </div>
-        
-        <div class="main-content">
-            <!-- Settings Panel (visible only after admin login) -->
-            <div class="settings-panel" id="settingsPanel">
-                <h3 class="settings-title"><i class="fas fa-cog"></i> Defect Threshold Settings</h3>
-                <div class="threshold-controls">
-                    <div class="threshold-control">
-                        <label for="greenThreshold">Green (🟢) Max %:</label>
-                        <input type="number" id="greenThreshold" min="0" max="100" value="8">
-                    </div>
-                    <div class="threshold-control">
-                        <label for="yellowThreshold">Yellow (🟡) Max %:</label>
-                        <input type="number" id="yellowThreshold" min="0" max="100" value="15">
-                    </div>
-                    <div class="threshold-control">
-                        <label for="redThreshold">Red (🔴) Min %:</label>
-                        <input type="number" id="redThreshold" min="0" max="100" value="16">
-                    </div>
-                    <div class="threshold-control">
-                        <label for="highRiskThreshold">High-Risk Min %:</label>
-                        <input type="number" id="highRiskThreshold" min="0" max="100" value="16">
-                    </div>
-                </div>
-                
-                <div class="text-controls">
-                    <h3 class="settings-title"><i class="fas fa-font"></i> Text Customization</h3>
-                    <div class="text-control">
-                        <label for="targetMessage">Target Message:</label>
-                        <textarea id="targetMessage" placeholder="Enter target message">Sewing Defects Target 10% Below</textarea>
-                    </div>
-                    <div class="text-control">
-                        <label for="actionNote">Action Note:</label>
-                        <textarea id="actionNote" placeholder="Enter action note">The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.</textarea>
-                    </div>
-                </div>
-                
-                <div class="line-management">
-                    <h3 class="settings-title"><i class="fas fa-list"></i> Line Management</h3>
-                    <div class="line-controls">
-                        <input type="text" id="newLineName" placeholder="Enter new line name">
-                        <button class="btn-save" id="addLineBtn">Add Line</button>
-                    </div>
-                    <div class="line-list" id="lineList">
-                        <!-- Line items will be added here -->
-                    </div>
-                </div>
-                
-                <button class="btn-save" id="saveAllBtn">
-                    <i class="fas fa-save"></i> Save All Settings
-                </button>
-            </div>
-            
-            <h2 class="section-title">Quality Performance by Line (Defect %):</h2>
-            
-            <div class="input-grid" id="lines-container">
-                <!-- Line inputs will be generated here -->
-            </div>
-            
-            <div class="high-risk-section">
-                <h3 class="high-risk-title"><i class="fas fa-exclamation-circle"></i> High-Risk Lines (Defect ><span id="highRiskValue">16</span>%):</h3>
-                <div class="high-risk-list" id="high-risk-container">
-                    <!-- High risk lines will be generated here -->
-                </div>
-            </div>
-            
-            <div class="action-note">
-                <div class="action-title"><i class="fas fa-clipboard-list"></i> Action Note:</div>
-                <p id="actionNoteText">The acceptable defect percentage is below 10%. Necessary corrective measures must be taken promptly to improve the overall quality performance, especially for high-risk lines.</p>
-            </div>
-            
-            <div class="buttons">
-                <button class="btn btn-update" id="update-btn">
-                    <i class="fas fa-sync-alt"></i> Update Report
-                </button>
-                <button class="btn btn-paste" id="paste-btn">
-                    <i class="fas fa-paste"></i> Paste from Excel
-                </button>
-                <button class="btn btn-copy" id="copy-btn">
-                    <i class="fas fa-copy"></i> Copy Report
-                </button>
-            </div>
-        </div>
+    <!-- Notification -->
+    <div class="notification" id="notification" style="display: none;">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Operation completed successfully!</span>
     </div>
-    
-    <div class="copy-notification" id="copy-notification">
-        <i class="fas fa-check-circle"></i> Report copied to clipboard!
-    </div>
-    
-    <footer>
-        <p>Quality Inspection System • © 2025 Apparel Manufacturing Co.</p>
-    </footer>
 
     <script>
-        // Set current date
-        function updateDate() {
-            const now = new Date();
-            const formattedDate = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
-            document.getElementById('currentDate').textContent = formattedDate;
-            return formattedDate;
-        }
+        // Initialize data storage
+        let isAdmin = false;
         
-        const currentDate = updateDate();
-        
-        // Load data from localStorage or initialize with defaults
+        // Load or initialize data
         function loadData() {
             const savedData = localStorage.getItem('qiReportData');
             if (savedData) {
                 return JSON.parse(savedData);
             }
             
-            // Default data
+            // Default data structure
             return {
                 lineData: [
-                    { line: '01', percent: 12 }, { line: '02', percent: 12 }, { line: '03', percent: 12 },
-                    { line: '04', percent: 17 }, { line: '05', percent: 16 }, { line: '06', percent: 16 },
-                    { line: '07', percent: 15 }, { line: '08', percent: 15 }, { line: '09', percent: 19 },
-                    { line: '10', percent: 12 }, { line: '11', percent: 18 }, { line: '12', percent: 46 },
-                    { line: '13', percent: 21 }, { line: '14', percent: 18 }, { line: '15', percent: 28 },
-                    { line: '16', percent: 15 }, { line: '17', percent: 31 }, { line: '18', percent: 12 },
-                    { line: '19', percent: 14 }, { line: '20', percent: 24 }, { line: '21', percent: 16 },
-                    { line: '22', percent: 14 }, { line: '23', percent: 11 }, { line: '24', percent: 51 },
-                    { line: '25', percent: 25 }, { line: '26', percent: 25 }, { line: '27', percent: 0 }
+                    { 
+                        line: '01', 
+                        defects: {
+                            'total': 12,
+                            'Uncut thread': 5,
+                            'Sewing defects': 4,
+                            'Fabric defects': 3
+                        }
+                    },
+                    { 
+                        line: '02', 
+                        defects: {
+                            'total': 25,
+                            'Uncut thread': 6,
+                            'Sewing defects': 15,
+                            'Fabric defects': 4
+                        }
+                    },
+                    { 
+                        line: '03', 
+                        defects: {
+                            'total': 8,
+                            'Uncut thread': 15,
+                            'Sewing defects': 5,
+                            'Fabric defects': 2
+                        }
+                    }
                 ],
+                defectTypes: ['total', 'Uncut thread', 'Sewing defects', 'Fabric defects'],
                 thresholds: {
                     green: 8,
                     yellow: 15,
                     red: 16,
-                    highRisk: 16
+                    highRisk: 16,
+                    uncutGreen: 8,
+                    uncutYellow: 15,
+                    uncutRed: 16,
+                    uncutHighRisk: 10
                 },
                 textContent: {
                     target: "Sewing Defects Target 10% Below",
@@ -697,184 +921,365 @@
                 }
             };
         }
+
+        // Initialize data
+        let { lineData, defectTypes, thresholds, textContent } = loadData();
+
+        // DOM Elements
+        const currentDateEl = document.getElementById('currentDate');
+        const targetTextEl = document.getElementById('targetText');
+        const actionNoteTextEl = document.getElementById('actionNoteText');
+        const defectTypeListEl = document.getElementById('defectTypeList');
+        const linesContainerEl = document.getElementById('lines-container');
+        const totalHighRiskContainerEl = document.getElementById('totalHighRiskContainer');
+        const uncutHighRiskContainerEl = document.getElementById('uncutHighRiskContainer');
+        const totalRiskValueEl = document.getElementById('totalRiskValue');
+        const uncutRiskValueEl = document.getElementById('uncutRiskValue');
         
+        // Admin elements
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+        
+        // Modal elements
+        const loginModal = document.getElementById('loginModal');
+        const pasteModal = document.getElementById('pasteModal');
+        const notificationEl = document.getElementById('notification');
+        const notificationTextEl = document.getElementById('notificationText');
+
+        // Initialize date
+        function initializeDate() {
+            const now = new Date();
+            const formattedDate = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
+            currentDateEl.textContent = formattedDate;
+            return formattedDate;
+        }
+
+        initializeDate();
+
         // Save data to localStorage
-        function saveData() {
+        function saveDataToStorage() {
             const dataToSave = {
                 lineData,
+                defectTypes,
                 thresholds,
                 textContent
             };
             localStorage.setItem('qiReportData', JSON.stringify(dataToSave));
         }
-        
-        // Initialize data
-        let { lineData, thresholds, textContent } = loadData();
-        
-        const linesContainer = document.getElementById('lines-container');
-        const highRiskContainer = document.getElementById('high-risk-container');
-        const updateBtn = document.getElementById('update-btn');
-        const copyBtn = document.getElementById('copy-btn');
-        const pasteBtn = document.getElementById('paste-btn');
-        const copyNotification = document.getElementById('copy-notification');
-        const adminLoginBtn = document.getElementById('adminLoginBtn');
-        const loginModal = document.getElementById('loginModal');
-        const loginBtn = document.getElementById('loginBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const settingsPanel = document.getElementById('settingsPanel');
-        const saveAllBtn = document.getElementById('saveAllBtn');
-        const highRiskValueSpan = document.getElementById('highRiskValue');
-        const targetTextElement = document.getElementById('targetText');
-        const actionNoteTextElement = document.getElementById('actionNoteText');
-        const addLineBtn = document.getElementById('addLineBtn');
-        const newLineNameInput = document.getElementById('newLineName');
-        const lineList = document.getElementById('lineList');
-        const pasteModal = document.getElementById('pasteModal');
-        const pasteApplyBtn = document.getElementById('pasteApplyBtn');
-        const pasteCancelBtn = document.getElementById('pasteCancelBtn');
-        const pasteArea = document.getElementById('pasteArea');
-        
-        // Function to get emoji for percentage based on thresholds
-        function getEmoji(percent) {
-            if (percent >= 1 && percent <= thresholds.green) return {emoji: '🟢', class: 'green'};
-            if (percent > thresholds.green && percent <= thresholds.yellow) return {emoji: '🟡', class: 'yellow'};
-            if (percent >= thresholds.red && percent <= 100) return {emoji: '🔴', class: 'red'};
-            return {emoji: '', class: ''};
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            notificationTextEl.textContent = message;
+            notificationEl.style.background = type === 'success' ? '#27ae60' : 
+                                             type === 'warning' ? '#f39c12' : '#e74c3c';
+            notificationEl.style.display = 'flex';
+            setTimeout(() => {
+                notificationEl.style.display = 'none';
+            }, 3000);
         }
-        
-        // Function to display all lines with input fields
-        function displayLines() {
-            linesContainer.innerHTML = '';
+
+        // Get emoji based on thresholds
+        function getEmoji(value, isUncut = false) {
+            const green = isUncut ? thresholds.uncutGreen : thresholds.green;
+            const yellow = isUncut ? thresholds.uncutYellow : thresholds.yellow;
+            const red = isUncut ? thresholds.uncutRed : thresholds.red;
             
-            lineData.forEach(item => {
-                const indicator = getEmoji(item.percent);
-                
-                const lineDiv = document.createElement('div');
-                lineDiv.className = 'line-input-group';
-                
-                lineDiv.innerHTML = `
-                    <span class="line-label">Line ${item.line}</span>
-                    <input type="number" class="percent-input" value="${item.percent}" min="0" max="100" data-line="${item.line}">
-                    <span class="line-label">%</span>
-                    <span class="indicator ${indicator.class}">${indicator.emoji}</span>
-                `;
-                
-                linesContainer.appendChild(lineDiv);
+            if (value >= 1 && value <= green) return '🟢';
+            if (value > green && value <= yellow) return '🟡';
+            if (value >= red && value <= 100) return '🔴';
+            return '';
+        }
+
+        // Display defect types
+        function displayDefectTypes() {
+            defectTypeListEl.innerHTML = '';
+            defectTypes.forEach(defectType => {
+                if (defectType === 'total') return;
+                const tag = document.createElement('div');
+                tag.className = 'defect-tag';
+                tag.innerHTML = `<i class="fas fa-tag"></i> ${defectType}`;
+                defectTypeListEl.appendChild(tag);
             });
         }
-        
-        // Function to update high-risk lines display
-        function updateHighRiskLines() {
-            highRiskContainer.innerHTML = '';
-            highRiskValueSpan.textContent = thresholds.highRisk;
+
+        // Display lines
+        function displayLines() {
+            linesContainerEl.innerHTML = '';
             
-            const highRiskLines = lineData.filter(item => item.percent >= thresholds.highRisk && item.percent <= 100);
-            
-            if (highRiskLines.length > 0) {
-                highRiskLines.forEach(item => {
-                    const riskItem = document.createElement('div');
-                    riskItem.className = 'high-risk-item';
-                    riskItem.innerHTML = `Line ${item.line} – ${item.percent}% 🔴`;
-                    highRiskContainer.appendChild(riskItem);
+            lineData.forEach((lineItem, index) => {
+                const lineCard = document.createElement('div');
+                lineCard.className = 'line-card';
+                
+                // Line header
+                const lineHeader = document.createElement('div');
+                lineHeader.className = 'line-header';
+                
+                const lineName = document.createElement('div');
+                lineName.className = 'line-name';
+                lineName.textContent = `Line ${lineItem.line}`;
+                
+                lineHeader.appendChild(lineName);
+                
+                // Defects inputs
+                const defectsInputs = document.createElement('div');
+                defectsInputs.className = 'defect-inputs';
+                
+                defectTypes.forEach(defectType => {
+                    const value = lineItem.defects[defectType] || 0;
+                    const isUncut = defectType === 'Uncut thread';
+                    const emoji = getEmoji(value, isUncut);
+                    
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'defect-input-group';
+                    
+                    const label = document.createElement('span');
+                    label.className = 'defect-label';
+                    label.textContent = defectType === 'total' ? 'Total defects' : defectType;
+                    
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.className = 'percent-input';
+                    input.value = value;
+                    input.min = '0';
+                    input.max = '100';
+                    input.dataset.line = lineItem.line;
+                    input.dataset.defect = defectType;
+                    
+                    const percent = document.createElement('span');
+                    percent.className = 'defect-label';
+                    percent.textContent = '%';
+                    percent.style.minWidth = 'auto';
+                    
+                    const indicator = document.createElement('span');
+                    indicator.className = `indicator ${emoji === '🟢' ? 'green' : emoji === '🟡' ? 'yellow' : 'red'}`;
+                    indicator.textContent = emoji;
+                    
+                    inputGroup.appendChild(label);
+                    inputGroup.appendChild(input);
+                    inputGroup.appendChild(percent);
+                    inputGroup.appendChild(indicator);
+                    defectsInputs.appendChild(inputGroup);
                 });
-            } else {
-                highRiskContainer.innerHTML = '<div>No high-risk lines</div>';
+                
+                lineCard.appendChild(lineHeader);
+                lineCard.appendChild(defectsInputs);
+                linesContainerEl.appendChild(lineCard);
+            });
+        }
+
+        // Update high-risk sections
+        function updateHighRiskSections() {
+            totalRiskValueEl.textContent = thresholds.highRisk;
+            uncutRiskValueEl.textContent = thresholds.uncutHighRisk;
+            
+            // Total defects high risk
+            totalHighRiskContainerEl.innerHTML = '';
+            const totalHighRiskLines = lineData.filter(item => 
+                item.defects.total >= thresholds.highRisk
+            );
+            
+            totalHighRiskLines.forEach(item => {
+                const riskItem = document.createElement('div');
+                riskItem.className = 'high-risk-item';
+                const emoji = getEmoji(item.defects.total);
+                riskItem.innerHTML = `
+                    <span>Line ${item.line} total defects – ${item.defects.total}%${emoji}</span>
+                `;
+                totalHighRiskContainerEl.appendChild(riskItem);
+            });
+            
+            if (totalHighRiskLines.length === 0) {
+                totalHighRiskContainerEl.innerHTML = '<div style="padding: 15px; text-align: center; color: #666;">No high-risk lines for total defects</div>';
+            }
+            
+            // Uncut thread high risk
+            uncutHighRiskContainerEl.innerHTML = '';
+            const uncutHighRiskLines = lineData.filter(item => 
+                item.defects['Uncut thread'] >= thresholds.uncutHighRisk
+            );
+            
+            uncutHighRiskLines.forEach(item => {
+                const riskItem = document.createElement('div');
+                riskItem.className = 'high-risk-item warning';
+                const emoji = getEmoji(item.defects['Uncut thread'], true);
+                riskItem.innerHTML = `
+                    <span>Line ${item.line} Uncut thread – ${item.defects['Uncut thread']}%${emoji}</span>
+                `;
+                uncutHighRiskContainerEl.appendChild(riskItem);
+            });
+            
+            if (uncutHighRiskLines.length === 0) {
+                uncutHighRiskContainerEl.innerHTML = '<div style="padding: 15px; text-align: center; color: #666;">No high-risk lines for uncut thread</div>';
             }
         }
-        
-        // Function to update text content
+
+        // Update text content
         function updateTextContent() {
-            targetTextElement.innerHTML = `<i class="fas fa-bullseye"></i> ${textContent.target}`;
-            actionNoteTextElement.textContent = textContent.actionNote;
+            targetTextEl.innerHTML = `<i class="fas fa-bullseye"></i> ${textContent.target}`;
+            actionNoteTextEl.textContent = textContent.actionNote;
         }
-        
-        // Function to update line list in admin panel
-        function updateLineList() {
-            lineList.innerHTML = '';
+
+        // Update defect list in admin panel
+        function updateDefectList() {
+            const defectListEl = document.getElementById('defectList');
+            defectListEl.innerHTML = '';
             
-            lineData.forEach(item => {
-                const lineItem = document.createElement('div');
-                lineItem.className = 'line-item';
+            defectTypes.forEach((defectType, index) => {
+                if (defectType === 'total') return;
                 
-                const lineNameInput = document.createElement('input');
-                lineNameInput.type = 'text';
-                lineNameInput.value = item.line;
-                lineNameInput.dataset.original = item.line;
-                lineNameInput.addEventListener('change', (e) => {
-                    const originalLine = e.target.dataset.original;
-                    const newLine = e.target.value;
-                    
-                    if (newLine && newLine !== originalLine) {
-                        // Check if line name already exists
-                        if (lineData.some(line => line.line === newLine)) {
-                            alert('Line name already exists!');
-                            e.target.value = originalLine;
+                const itemRow = document.createElement('div');
+                itemRow.className = 'item-row';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = defectType;
+                
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'item-actions';
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'action-btn edit-btn';
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                editBtn.onclick = () => {
+                    const newName = prompt('Edit defect type name:', defectType);
+                    if (newName && newName.trim() && newName !== defectType) {
+                        if (defectTypes.includes(newName)) {
+                            showNotification('Defect type already exists!', 'warning');
                             return;
                         }
                         
-                        // Update line name
-                        const lineItem = lineData.find(line => line.line === originalLine);
-                        if (lineItem) {
-                            lineItem.line = newLine;
-                            e.target.dataset.original = newLine;
-                            displayLines();
-                            updateHighRiskLines();
-                        }
-                    } else {
-                        e.target.value = originalLine;
+                        // Update in defectTypes
+                        defectTypes[index] = newName;
+                        
+                        // Update in all line data
+                        lineData.forEach(line => {
+                            if (line.defects[defectType] !== undefined) {
+                                line.defects[newName] = line.defects[defectType];
+                                delete line.defects[defectType];
+                            }
+                        });
+                        
+                        updateDefectList();
+                        displayDefectTypes();
+                        displayLines();
+                        updateHighRiskSections();
+                        saveDataToStorage();
+                        showNotification('Defect type updated successfully!');
                     }
-                });
+                };
                 
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'line-item-btn delete';
+                deleteBtn.className = 'action-btn delete-btn';
                 deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                deleteBtn.addEventListener('click', () => {
-                    if (lineData.length <= 1) {
-                        alert('You must have at least one line!');
+                deleteBtn.onclick = () => {
+                    if (defectTypes.length <= 2) {
+                        showNotification('You must have at least one defect type!', 'warning');
                         return;
                     }
                     
-                    if (confirm('Are you sure you want to delete this line?')) {
-                        const index = lineData.findIndex(line => line.line === item.line);
-                        if (index !== -1) {
-                            lineData.splice(index, 1);
-                            updateLineList();
-                            displayLines();
-                            updateHighRiskLines();
-                        }
+                    if (confirm(`Are you sure you want to delete "${defectType}"?`)) {
+                        // Remove from defectTypes
+                        defectTypes.splice(index, 1);
+                        
+                        // Remove from all line data
+                        lineData.forEach(line => {
+                            delete line.defects[defectType];
+                        });
+                        
+                        updateDefectList();
+                        displayDefectTypes();
+                        displayLines();
+                        updateHighRiskSections();
+                        saveDataToStorage();
+                        showNotification('Defect type deleted successfully!');
                     }
-                });
+                };
                 
-                const buttonContainer = document.createElement('div');
-                buttonContainer.className = 'line-item-buttons';
-                buttonContainer.appendChild(deleteBtn);
-                
-                lineItem.appendChild(lineNameInput);
-                lineItem.appendChild(buttonContainer);
-                lineList.appendChild(lineItem);
+                actionsDiv.appendChild(editBtn);
+                actionsDiv.appendChild(deleteBtn);
+                itemRow.appendChild(nameSpan);
+                itemRow.appendChild(actionsDiv);
+                defectListEl.appendChild(itemRow);
             });
         }
-        
-        // Enhanced function to parse pasted percentages from Excel
+
+        // Update line list in admin panel
+        function updateLineList() {
+            const lineListEl = document.getElementById('lineList');
+            lineListEl.innerHTML = '';
+            
+            lineData.forEach((lineItem, index) => {
+                const itemRow = document.createElement('div');
+                itemRow.className = 'item-row';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = `Line ${lineItem.line}`;
+                
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'item-actions';
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'action-btn edit-btn';
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                editBtn.onclick = () => {
+                    const newName = prompt('Edit line name:', lineItem.line);
+                    if (newName && newName.trim() && newName !== lineItem.line) {
+                        if (lineData.some(line => line.line === newName)) {
+                            showNotification('Line name already exists!', 'warning');
+                            return;
+                        }
+                        
+                        lineItem.line = newName;
+                        updateLineList();
+                        displayLines();
+                        updateHighRiskSections();
+                        saveDataToStorage();
+                        showNotification('Line name updated successfully!');
+                    }
+                };
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'action-btn delete-btn';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.onclick = () => {
+                    if (lineData.length <= 1) {
+                        showNotification('You must have at least one line!', 'warning');
+                        return;
+                    }
+                    
+                    if (confirm(`Are you sure you want to delete "Line ${lineItem.line}"?`)) {
+                        lineData.splice(index, 1);
+                        updateLineList();
+                        displayLines();
+                        updateHighRiskSections();
+                        saveDataToStorage();
+                        showNotification('Line deleted successfully!');
+                    }
+                };
+                
+                actionsDiv.appendChild(editBtn);
+                actionsDiv.appendChild(deleteBtn);
+                itemRow.appendChild(nameSpan);
+                itemRow.appendChild(actionsDiv);
+                lineListEl.appendChild(itemRow);
+            });
+        }
+
+        // Parse pasted percentages
         function parsePastedPercentages(text) {
-            // Handle Excel-specific characters and formats
             const cleanedText = text
-                .replace(/[​  ]/g, ' ') // Remove various space characters
-                .replace(/[℉]/g, '%') // Fix special percentage symbol
-                .replace(/[^\d%\n\t,\. ]/g, '') // Remove unwanted characters but keep numbers, %, newlines, tabs, commas, dots, and spaces
+                .replace(/[​  ]/g, ' ')
+                .replace(/[℉]/g, '%')
+                .replace(/[^\d%\n\t,\. ]/g, '')
                 .trim();
             
-            // Split by newlines, commas, tabs, or multiple spaces
             const values = cleanedText.split(/[\n,\t ]+/)
                 .map(val => val.trim())
                 .filter(val => val !== '')
                 .map(val => {
-                    // Handle percentage values (remove % sign and convert)
                     if (val.includes('%')) {
                         val = val.replace('%', '');
                     }
-                    
-                    // Extract numeric value
                     const num = parseFloat(val);
                     return isNaN(num) ? null : Math.min(100, Math.max(0, Math.round(num)));
                 })
@@ -882,48 +1287,40 @@
             
             return values;
         }
-        
-        // Function to apply pasted percentages
-        function applyPastedPercentages(percentages) {
-            if (percentages.length === 0) {
-                alert('No valid percentages found in the pasted text.');
-                return false;
-            }
-            
-            if (percentages.length > lineData.length) {
-                alert(`You pasted ${percentages.length} values but there are only ${lineData.length} lines. Only the first ${lineData.length} values will be used.`);
-            } else if (percentages.length < lineData.length) {
-                alert(`You pasted ${percentages.length} values but there are ${lineData.length} lines. Only the first ${percentages.length} lines will be updated.`);
-            }
-            
-            // Apply percentages to lines in order
-            for (let i = 0; i < Math.min(percentages.length, lineData.length); i++) {
-                lineData[i].percent = percentages[i];
-            }
-            
-            displayLines();
-            updateHighRiskLines();
-            saveData();
-            
-            return true;
-        }
-        
-        // Function to generate copyable text
+
+        // Generate copy text
         function generateCopyText() {
-            let text = `📅 Daily End Line QI Report – ${currentDate}\n`;
+            let text = `📅 Daily End Line QI Report – ${initializeDate()}\n`;
             text += `🎯 ${textContent.target}\n\n`;
-            text += `Quality Performance by Line (Defect %):\n\n`;
+            text += `Quality Performance by Line:\n\n`;
             
             lineData.forEach(item => {
-                const indicator = getEmoji(item.percent);
-                text += `Line ${item.line} – ${item.percent}% ${indicator.emoji}\n`;
+                let lineText = `Line ${item.line} total defects – ${item.defects.total}% ${getEmoji(item.defects.total)}`;
+                
+                defectTypes.filter(d => d !== 'total').forEach(defectType => {
+                    const value = item.defects[defectType] || 0;
+                    const isUncut = defectType === 'Uncut thread';
+                    lineText += ` ${defectType} ${value}%${getEmoji(value, isUncut)}`;
+                });
+                
+                text += lineText + '\n';
             });
             
-            const highRiskLines = lineData.filter(item => item.percent >= thresholds.highRisk && item.percent <= 100);
-            if (highRiskLines.length > 0) {
-                text += `\n🔴 High-Risk Lines (Defect >${thresholds.highRisk}%):\n`;
-                highRiskLines.forEach(item => {
-                    text += `Line ${item.line} – ${item.percent}%🔴\n`;
+            // Add high-risk sections
+            const totalHighRiskLines = lineData.filter(item => item.defects.total >= thresholds.highRisk);
+            const uncutHighRiskLines = lineData.filter(item => item.defects['Uncut thread'] >= thresholds.uncutHighRisk);
+            
+            if (totalHighRiskLines.length > 0) {
+                text += `\n🔴 High-Risk Lines (Total Defects >${thresholds.highRisk}%):\n`;
+                totalHighRiskLines.forEach(item => {
+                    text += `Line ${item.line} total defects – ${item.defects.total}%${getEmoji(item.defects.total)}\n`;
+                });
+            }
+            
+            if (uncutHighRiskLines.length > 0) {
+                text += `\n🔴 High-Risk Lines (Uncut Thread >${thresholds.uncutHighRisk}%):\n`;
+                uncutHighRiskLines.forEach(item => {
+                    text += `Line ${item.line} Uncut thread – ${item.defects['Uncut thread']}%${getEmoji(item.defects['Uncut thread'], true)}\n`;
                 });
             }
             
@@ -932,179 +1329,226 @@
             
             return text;
         }
-        
-        // Update button click handler
-        updateBtn.addEventListener('click', () => {
-            // Get all input elements
+
+        // Initialize the display
+        function initializeDisplay() {
+            displayDefectTypes();
+            displayLines();
+            updateHighRiskSections();
+            updateTextContent();
+        }
+
+        // Event Listeners
+        document.getElementById('updateBtn').addEventListener('click', () => {
             const inputs = document.querySelectorAll('.percent-input');
-            
-            // Update lineData with new values
             inputs.forEach(input => {
                 const line = input.dataset.line;
+                const defect = input.dataset.defect;
                 const percent = parseInt(input.value) || 0;
                 const lineItem = lineData.find(item => item.line === line);
                 if (lineItem) {
-                    lineItem.percent = percent;
+                    lineItem.defects[defect] = percent;
                 }
             });
             
-            // Refresh the display
             displayLines();
-            updateHighRiskLines();
-            saveData();
+            updateHighRiskSections();
+            saveDataToStorage();
+            showNotification('Report updated successfully!');
         });
-        
-        // Copy button click handler
-        copyBtn.addEventListener('click', () => {
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
             const copyText = generateCopyText();
-            
-            // Copy to clipboard
             navigator.clipboard.writeText(copyText).then(() => {
-                // Show notification
-                copyNotification.classList.add('show');
-                setTimeout(() => {
-                    copyNotification.classList.remove('show');
-                }, 3000);
+                showNotification('Report copied to clipboard!');
             }).catch(err => {
-                console.error('Failed to copy: ', err);
-                alert('Failed to copy report. Please try again.');
+                showNotification('Failed to copy report!', 'warning');
             });
         });
-        
-        // Paste button click handler
-        pasteBtn.addEventListener('click', () => {
-            // Show current values as example
-            const exampleValues = lineData.map(line => line.percent + '%').join('\n');
-            pasteArea.value = exampleValues;
-            pasteModal.style.display = 'flex';
-            pasteArea.focus();
-            pasteArea.select();
-        });
-        
-        // Apply paste button click handler
-        pasteApplyBtn.addEventListener('click', () => {
-            const pastedText = pasteArea.value;
-            const percentages = parsePastedPercentages(pastedText);
+
+        document.getElementById('pasteBtn').addEventListener('click', () => {
+            const totalTextarea = document.getElementById('pasteAreaTotal');
+            const uncutTextarea = document.getElementById('pasteAreaUncut');
             
-            if (applyPastedPercentages(percentages)) {
-                pasteModal.style.display = 'none';
-                const appliedCount = Math.min(percentages.length, lineData.length);
-                alert(`Successfully applied ${appliedCount} percentages to the lines in sequence.`);
-            }
+            totalTextarea.value = lineData.map(line => line.defects.total).join('\n');
+            uncutTextarea.value = lineData.map(line => line.defects['Uncut thread'] || 0).join('\n');
+            
+            pasteModal.style.display = 'flex';
         });
-        
-        // Cancel paste button click handler
-        pasteCancelBtn.addEventListener('click', () => {
-            pasteModal.style.display = 'none';
-        });
-        
-        // Admin login functionality
+
+        // Login functionality
         adminLoginBtn.addEventListener('click', () => {
             loginModal.style.display = 'flex';
         });
-        
-        cancelBtn.addEventListener('click', () => {
-            loginModal.style.display = 'none';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            isAdmin = false;
+            settingsPanel.style.display = 'none';
+            adminLoginBtn.style.display = 'flex';
+            logoutBtn.style.display = 'none';
+            showNotification('Logged out successfully!');
         });
-        
-        loginBtn.addEventListener('click', () => {
+
+        document.getElementById('loginBtn').addEventListener('click', () => {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
             if (username === 'admin' && password === '127627') {
-                // Successful login
-                loginModal.style.display = 'none';
+                isAdmin = true;
                 settingsPanel.style.display = 'block';
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
+                adminLoginBtn.style.display = 'none';
+                logoutBtn.style.display = 'flex';
+                loginModal.style.display = 'none';
                 
-                // Set current threshold values in inputs
+                // Populate admin settings
                 document.getElementById('greenThreshold').value = thresholds.green;
                 document.getElementById('yellowThreshold').value = thresholds.yellow;
                 document.getElementById('redThreshold').value = thresholds.red;
                 document.getElementById('highRiskThreshold').value = thresholds.highRisk;
-                
-                // Set current text values in inputs
+                document.getElementById('uncutGreenThreshold').value = thresholds.uncutGreen;
+                document.getElementById('uncutYellowThreshold').value = thresholds.uncutYellow;
+                document.getElementById('uncutRedThreshold').value = thresholds.uncutRed;
+                document.getElementById('uncutHighRiskThreshold').value = thresholds.uncutHighRisk;
                 document.getElementById('targetMessage').value = textContent.target;
                 document.getElementById('actionNote').value = textContent.actionNote;
                 
-                // Update line list
+                updateDefectList();
                 updateLineList();
+                
+                showNotification('Admin login successful!');
             } else {
-                alert('Invalid credentials. Please try again.');
+                showNotification('Invalid credentials!', 'warning');
             }
         });
-        
-        // Add new line
-        addLineBtn.addEventListener('click', () => {
-            const newLineName = newLineNameInput.value.trim();
+
+        // Modal cancel buttons
+        document.getElementById('modalCancelBtn').addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+
+        document.getElementById('pasteCancelBtn').addEventListener('click', () => {
+            pasteModal.style.display = 'none';
+        });
+
+        // Paste modal tabs
+        document.querySelectorAll('.modal-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}Tab`).classList.add('active');
+            });
+        });
+
+        // Apply paste
+        document.getElementById('pasteApplyBtn').addEventListener('click', () => {
+            const activeTab = document.querySelector('.modal-tab.active');
+            const defectType = activeTab.dataset.tab === 'total' ? 'total' : 'Uncut thread';
+            
+            const textarea = document.getElementById(`pasteArea${activeTab.dataset.tab.charAt(0).toUpperCase() + activeTab.dataset.tab.slice(1)}`);
+            const percentages = parsePastedPercentages(textarea.value);
+            
+            if (percentages.length === 0) {
+                showNotification('No valid percentages found!', 'warning');
+                return;
+            }
+            
+            percentages.forEach((percent, index) => {
+                if (index < lineData.length) {
+                    lineData[index].defects[defectType] = percent;
+                }
+            });
+            
+            displayLines();
+            updateHighRiskSections();
+            saveDataToStorage();
+            pasteModal.style.display = 'none';
+            showNotification(`${percentages.length} ${defectType} percentages applied!`);
+        });
+
+        // Add defect type
+        document.getElementById('addDefectBtn').addEventListener('click', () => {
+            const newDefectName = document.getElementById('newDefectName').value.trim();
+            
+            if (!newDefectName) {
+                showNotification('Please enter a defect type name!', 'warning');
+                return;
+            }
+            
+            if (defectTypes.includes(newDefectName)) {
+                showNotification('Defect type already exists!', 'warning');
+                return;
+            }
+            
+            defectTypes.push(newDefectName);
+            lineData.forEach(line => {
+                line.defects[newDefectName] = 0;
+            });
+            
+            document.getElementById('newDefectName').value = '';
+            updateDefectList();
+            displayDefectTypes();
+            displayLines();
+            saveDataToStorage();
+            showNotification(`Defect type "${newDefectName}" added!`);
+        });
+
+        // Add line
+        document.getElementById('addLineBtn').addEventListener('click', () => {
+            const newLineName = document.getElementById('newLineName').value.trim();
             
             if (!newLineName) {
-                alert('Please enter a line name');
+                showNotification('Please enter a line name!', 'warning');
                 return;
             }
             
-            // Check if line name already exists
             if (lineData.some(line => line.line === newLineName)) {
-                alert('Line name already exists!');
+                showNotification('Line name already exists!', 'warning');
                 return;
             }
             
-            // Add new line with 0% default
-            lineData.push({ line: newLineName, percent: 0 });
-            newLineNameInput.value = '';
+            const newLine = { line: newLineName, defects: {} };
+            defectTypes.forEach(defectType => {
+                newLine.defects[defectType] = 0;
+            });
             
-            // Update displays
+            lineData.push(newLine);
+            document.getElementById('newLineName').value = '';
             updateLineList();
             displayLines();
-            updateHighRiskLines();
-            saveData();
+            updateHighRiskSections();
+            saveDataToStorage();
+            showNotification(`Line "${newLineName}" added!`);
         });
-        
+
         // Save all settings
-        saveAllBtn.addEventListener('click', () => {
-            const greenValue = parseInt(document.getElementById('greenThreshold').value);
-            const yellowValue = parseInt(document.getElementById('yellowThreshold').value);
-            const redValue = parseInt(document.getElementById('redThreshold').value);
-            const highRiskValue = parseInt(document.getElementById('highRiskThreshold').value);
-            
-            if (isNaN(greenValue) || isNaN(yellowValue) || isNaN(redValue) || isNaN(highRiskValue)) {
-                alert('Please enter valid numbers for all thresholds.');
-                return;
-            }
-            
-            if (greenValue >= yellowValue || yellowValue >= redValue) {
-                alert('Color thresholds must be in increasing order: Green < Yellow < Red');
-                return;
-            }
-            
-            if (highRiskValue < 0 || highRiskValue > 100) {
-                alert('High-Risk threshold must be between 0 and 100');
-                return;
-            }
-            
-            thresholds.green = greenValue;
-            thresholds.yellow = yellowValue;
-            thresholds.red = redValue;
-            thresholds.highRisk = highRiskValue;
+        document.getElementById('saveAllBtn').addEventListener('click', () => {
+            // Update thresholds
+            thresholds.green = parseInt(document.getElementById('greenThreshold').value) || 8;
+            thresholds.yellow = parseInt(document.getElementById('yellowThreshold').value) || 15;
+            thresholds.red = parseInt(document.getElementById('redThreshold').value) || 16;
+            thresholds.highRisk = parseInt(document.getElementById('highRiskThreshold').value) || 16;
+            thresholds.uncutGreen = parseInt(document.getElementById('uncutGreenThreshold').value) || 8;
+            thresholds.uncutYellow = parseInt(document.getElementById('uncutYellowThreshold').value) || 15;
+            thresholds.uncutRed = parseInt(document.getElementById('uncutRedThreshold').value) || 16;
+            thresholds.uncutHighRisk = parseInt(document.getElementById('uncutHighRiskThreshold').value) || 10;
             
             // Update text content
             textContent.target = document.getElementById('targetMessage').value;
             textContent.actionNote = document.getElementById('actionNote').value;
             
-            alert('All settings saved successfully!');
+            // Refresh displays
             displayLines();
-            updateHighRiskLines();
+            updateHighRiskSections();
             updateTextContent();
-            saveData();
+            saveDataToStorage();
+            
+            showNotification('All settings saved successfully!');
         });
-        
-        // Initial display
-        displayLines();
-        updateHighRiskLines();
-        updateTextContent();
+
+        // Initialize the application
+        initializeDisplay();
     </script>
 </body>
 </html>
